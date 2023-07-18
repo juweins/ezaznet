@@ -118,6 +118,6 @@ jobs:
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{steps.terrascan.outputs.sarif_file}}
+        sarif_file: terrascan.sarif
       
             
