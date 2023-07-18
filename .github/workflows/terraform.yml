@@ -59,4 +59,13 @@ jobs:
       uses: devops-infra/action-tflint@v0.3
       with:
         dir_filter: terraform/*/
+    
+    - name: Terrascan IaC scanner
+      uses: tenable/terrascan-action@v1.4.1
+      with:
+        iac_type: terraform
+        iac_dir: terraform/
+        only_warn: true
+        sarif_upload: true
+      
             
