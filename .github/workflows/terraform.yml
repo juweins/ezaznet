@@ -8,6 +8,12 @@ on:
 jobs:
   terraform-modules:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+        shell: bash
+
+    needs: [terraform-lint, terrascan]
 
     steps:
     - name: Checkout repository
@@ -54,18 +60,60 @@ jobs:
                 echo "-----------------------------------"
                 cd ../..
             done <"$file"
-    
+
+    # - name: Create Plan files
+    #   run: |
+    #         # Read the output variable from the previous step
+    #         file="modules.txt"
+
+    #         # While loop to iterate through entire terraform directory
+    #         while IFS= read -r line
+    #         do
+    #             module_name=$(basename $line)
+
+    #             echo "-----------------------------------"
+
+    #             echo "Processing module $module_name"
+    #             cd $line
+
+    #             echo "Creating Plan file..."
+    #             terraform plan -out=$(module_name)-plan.tfplan
+
+    #             echo "Success! $module_name planned."
+    #             echo "-----------------------------------"
+    #             cd ../..
+    #         done <"$file"
+      
+        
+  terraform-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+        shell: bash
+
+    steps:
     - name: Run tflint
       uses: devops-infra/action-tflint@v0.3
       with:
         dir_filter: terraform/*/
-    
+
+  terrascan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+        shell: bash
+
+    steps:
     - name: Terrascan IaC scanner
       uses: tenable/terrascan-action@v1.4.1
       with:
         iac_type: terraform
-        iac_dir: terraform/
-        only_warn: true
         sarif_upload: true
+    # - name: Upload SARIF file
+    #   uses: github/codeql-action/upload-sarif@v1
+    #   with:
+    #     sarif_file: terrascan.sarif
       
             
