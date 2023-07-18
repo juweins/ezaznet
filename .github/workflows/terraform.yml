@@ -102,6 +102,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Terrascan IaC scanner
       uses: tenable/terrascan-action@v1.4.1
       with:
